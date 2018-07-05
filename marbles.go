@@ -2,6 +2,7 @@ package main
 
 import (
         "fmt"
+        "time"
 //      "strconv"
         "github.com/hyperledger/fabric/core/chaincode/shim"
         pb "github.com/hyperledger/fabric/protos/peer"
@@ -18,10 +19,14 @@ type SimpleChaincode struct {
 // ----- Marbles ----- //
 //구조체로 관리,...
 type Info struct {
-        Id       string   `json:"id"`
-        Name     string   `json:"name"`
-        Phone    string   `json:"phone"`
-        Address  string   `json:"address"`
+        Id              string  `json:"id"`
+        Name            string  `json:"name"`
+        Phone           string  `json:"phone"`
+        Address         string  `json:"address"`
+        Payment_plan    string  `json:"payment_plan"`   //  07.02  데이터 추가
+        Grade           string  `json:"grade"`          //  07.02  데이터 추가
+        Modified_time   time.Time       `json:"modified_time"`  //  07.02  데이터 추가
+
 }
 
 // ============================================================================================================================
@@ -86,6 +91,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
                 return modify(stub, args)
         } else if function == "getHistory"{        //read history of a info (audit)
                 return getHistory(stub, args)
+        } else if function == "read"{
+                return read(stub, args)
         }
 
         // error out

@@ -3,6 +3,7 @@ package main
 import (
         "encoding/json"
         "fmt"
+        "time"
         _ "strconv"
         _ "strings"
 
@@ -72,16 +73,19 @@ func delete_info(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 //
 // Inputs - Array of strings
 // type Info struct {
-//      Id       string         `json:"id"`
-//      Name      string        `json:"name"`
-//      Phone       string      `json:"phone"`
-//      Address      string     `json:"address"`
+//      Id                              string  `json:"id"`
+//      Name                    string  `json:"name"`
+//      Phone                   string  `json:"phone"`
+//      Address                 string  `json:"address"`
+//      Payment_plan    string  `json:"payment_plan"`   //  07.02  데이터 추가
+//      Grade                   string  `json:"grade"`                  //  07.02  데이터 추가
+//      Modified_time   string  `json:"modified_time"`  //  07.02  데이터 추가
 // ============================================================================================================================
 func init_info(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
         var err error
         fmt.Println("starting init_info")
 
-        if len(args) != 4 {
+        if len(args) != 6 {
                 return shim.Error("Incorrect number of arguments. Expecting 4")
         }
 
@@ -89,6 +93,10 @@ func init_info(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
         name := args[1]
         phone := args[2]
         address := args[3]
+        payment_plan := args[4]
+        grade := args[5]
+        modified_time := time.Now().Format("2006-01-02 15:04")
+
 
         //check if info id already exists
         info, err := get_info(stub, id)
@@ -103,7 +111,10 @@ func init_info(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
                 "id": "` + id + `",
                 "name": "` + name + `",
                 "phone": "` + phone + `",
-                "address": "` + address + `"
+                "address": "` + address + `",
+                "Payment_plan": "` + payment_plan + `",
+                "Grade": "` + grade + `",
+                "Modified_time": "` + modified_time + `"
         }`
         err = stub.PutState(id, []byte(str))
         if err != nil {
@@ -143,12 +154,23 @@ func modify(stub shim.ChaincodeStubInterface, args []string) pb.Response {
         if type_d == "name" {
                 fmt.Println( "Current " + type_d + " : " + res.Name + " => " + data + "...")
                 res.Name = data
+                res.Modified_time = time.Now()
         } else if type_d == "phone" {
                 fmt.Println( "Current " + type_d + " : " + res.Phone + " => " + data + "...")
                 res.Phone = data
+                res.Modified_time = time.Now()
         } else if type_d == "address" {
                 fmt.Println( "Current " + type_d + " : " + res.Address + " => " + data + "...")
                 res.Address = data
+                res.Modified_time = time.Now()
+        } else if type_d == "payment_plan" {
+                fmt.Println( "Current " + type_d + " : " + res.Payment_plan + " => " + data + "...")
+                res.Payment_plan = data
+                res.Modified_time = time.Now()
+        } else if type_d == "Grade" {
+                fmt.Println( "Current " + type_d + " : " + res.Grade + " => " + data + "...")
+                res.Grade = data
+                res.Modified_time = time.Now()
         }
 
         jsonAsBytes, _ := json.Marshal(res)           //convert to array of bytes

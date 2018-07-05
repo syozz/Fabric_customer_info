@@ -71,3 +71,42 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
         historyAsBytes, _ := json.Marshal(history)     //convert to array of bytes
         return shim.Success(historyAsBytes)
 }
+
+
+func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+        var key, jsonResp string
+        var err error
+        res := Info{}
+
+        fmt.Println("starting read")
+
+        if len(args) != 1 {
+                return shim.Error("Incorrect number of arguments. Expecting key of the var to query")
+        }
+
+        key = args[0]
+        infoAsbytes, err := stub.GetState(key)           //get the var from ledger
+        if err != nil {
+                jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+                return shim.Error(jsonResp)
+        }
+
+        json.Unmarshal(infoAsbytes, &res)           //un stringify it aka JSON.parse()
+
+        fmt.Println("==========================")
+        fmt.Println("Id : " + res.Id)
+        fmt.Println("Name : " + res.Name)
+        fmt.Println("Phone : " + res.Phone)
+        fmt.Println("Address : " + res.Address)
+        fmt.Println("==========================")
+//      str := `{
+//                "id": "` + res.Id + `",
+//                "name": "` + res.Name + `",
+//                "phone": "` + res.Phone + `",
+//                "address": "` + res.Address + `",
+//                "Payment_plan": "` + res.Payment_plan + `",
+//                "Grade": "` + res.Grade + `",
+//                "Modified_time": "` + string(res.Modified_time) + `"
+//        }`
+        return shim.Success(infoAsbytes)
+}

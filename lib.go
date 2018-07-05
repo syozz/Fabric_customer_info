@@ -27,6 +27,3 @@ func get_info(stub shim.ChaincodeStubInterface, id string) (Info, error) {
 
         return info, nil
 }
-
-
-
