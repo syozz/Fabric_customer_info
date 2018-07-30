@@ -102,7 +102,7 @@ func init_info(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if err == nil {
 		fmt.Println("This info already exists - " + id)
 		fmt.Println(info)
-		return shim.Error("This marble already exists - " + id) // 정보가 존재하면 중지
+		//                return shim.Error("This marble already exists - " + id)  // 정보가 존재하면 중지
 	}
 
 	//build the info  json string manually
